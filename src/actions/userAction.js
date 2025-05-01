@@ -5,6 +5,7 @@ import {data} from "react-router-dom";
 export const GET_USERS_LIST = "GET_USERS_LIST";
 export const GET_USERS_DETAIL = "GET_USERS_DETAIL";
 export const POST_USERS_CREATE = "POST_USERS_CREATE";
+export const PUT_USERS_EDIT = "PUT_USERS_EDIT";
 
 export const getUsersList = () => {
   return (dispatch) => {
@@ -84,6 +85,51 @@ export const postUsersCreate = (data) => {
             errorMessage: error.message,
           },
         });
+      });
+  };
+};
+export const putUsersUpdate = (data, id) => {
+  return (dispatch) => {
+    axios
+      .put(
+        "http://my-json-server.typicode.com/afifbasya/reactjs-redux/users/" +
+          id,
+        data
+      )
+      .then(function (response) {
+        console.log(response);
+
+        dispatch({
+          type: PUT_USERS_EDIT,
+          payload: {
+            data: response.data,
+            errorMessage: false,
+          },
+        });
+      })
+      .catch(function (error) {
+        dispatch({
+          type: PUT_USERS_EDIT,
+          payload: {
+            data: false,
+            errorMessage: error.message,
+          },
+        });
+      });
+  };
+};
+
+export const deleteUsers = (id) => {
+  return (dispatch) => {
+    axios
+      .delete(
+        "http://my-json-server.typicode.com/afifbasya/reactjs-redux/users/" + id
+      )
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
       });
   };
 };

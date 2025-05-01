@@ -11,7 +11,30 @@ import {
 import paginationFactory from "react-bootstrap-table2-paginator";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
+import swal from "sweetalert";
 import "../custom.css";
+import {deleteUsers} from "../actions/userAction";
+
+const handleClick = (dispatch, id) => {
+  // console.log("user dengan id =" + id);
+  swal({
+    title: "Apakah Anda Yakin Hapus Data Ini?",
+    // text: "Once deleted, you will not be able to recover this imaginary file!",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  }).then((willDelete) => {
+    if (willDelete) {
+      dispatch(deleteUsers(id));
+      // console.log("user dengan id =" + id);
+      swal("Data Berhasil DiHapus!", {
+        icon: "success",
+      });
+    } else {
+      swal("Data Gagal DiHapus!");
+    }
+  });
+};
 
 const mapStateToProps = (state) => {
   return {
@@ -20,16 +43,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const TableComponents = ({getUsersList}) => {
-  const [search, setSearch] = useState("");
-  const users = getUsersList || [];
-
-  const filteredUsers = users.filter((user) =>
-    Object.values(user).some((value) =>
-      value.toString().toLowerCase().includes(search.toLowerCase())
-    )
-  );
-
+const TableComponents = ({getUsersList, dispatch}) => {
   const columns = [
     {
       dataField: "id",
@@ -87,6 +101,7 @@ const TableComponents = ({getUsersList}) => {
               variant="dark"
               size="sm"
               className="d-inline-flex align-items-center"
+              onClick={() => handleClick(dispatch, row.id)}
             >
               <FontAwesomeIcon icon={faTrash} className="me-1" />
               Delete
@@ -96,6 +111,15 @@ const TableComponents = ({getUsersList}) => {
       },
     },
   ];
+  const [search, setSearch] = useState("");
+  const users = getUsersList || [];
+
+  const filteredUsers = users.filter((user) =>
+    Object.values(user).some((value) =>
+      value.toString().toLowerCase().includes(search.toLowerCase())
+    )
+  );
+
   const options = {
     sizePerPage: 5,
     hideSizePerPage: false,
@@ -143,4 +167,5 @@ const TableComponents = ({getUsersList}) => {
   );
 };
 
-export default connect(mapStateToProps, null)(TableComponents);
+// export default connect(mapStateToProps, null)(TableComponents);
+export default connect(mapStateToProps)(TableComponents);
